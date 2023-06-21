@@ -5,14 +5,24 @@ function plot_analysis (sig, fs)
     t = (0:L-1)*T;
 
     sig_fft = fft(sig);
+    sif_fft_mod = abs(fftshift(sig_fft));
     f = fs*(-((L/2)-1):((L/2)))/L;
     
     % Plot the signal in time
-    subplot(2, 1, 1);
+    subplot(2, 2, 1);
     plot(t, sig);
 
-    subplot(2, 1, 2);
-    y = abs(fftshift(sig_fft));
+    % Plot the signal in frequency
+    subplot(2, 2, 2);
+    plot(f, sif_fft_mod)
+
+    % Plot the signal in frequency (dB)
+    subplot(2, 2, 3);
+    y = mag2db(sif_fft_mod);
     plot(f, y)
+
+    % Plot the signal spectrogram
+    subplot(2, 2, 4);
+    spectrogram(sig, fs, 'yaxis')
 
 end
