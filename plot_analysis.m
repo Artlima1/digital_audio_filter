@@ -8,6 +8,8 @@ function plot_analysis (sig, fs)
     sif_fft_mod = abs(fftshift(sig_fft));
     f = fs*(-((L/2)-1):((L/2)))/L;
     
+    figure
+
     % Plot the signal in time
     subplot(2, 2, 1);
     plot(t, sig);
