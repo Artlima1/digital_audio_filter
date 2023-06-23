@@ -1,4 +1,4 @@
-function [y, kw, beta, h, Nh] = fir_lfl_kw_os(x, fs, filter_params, L_block)
+function [y, kw, beta, h, Nh] = fir_lfl_kw_os(x, fs, filter_params, L_block, interval)
 % fir_lfl_kw_os(x, fs, filter_params, L_block) 
     % Finite impulse response low pass filter with kaiser window and
     % overlap-save
@@ -11,6 +11,7 @@ function [y, kw, beta, h, Nh] = fir_lfl_kw_os(x, fs, filter_params, L_block)
     %         fr -> rejection band frequency
     %         ripple -> tolerable ripple for passing and rejection band
     %     L_block -> block size to use in overlap-save
+    %     interval -> [start end], interval in which to apply the filter
     % Return:
     %     y -> y[n], filtered signal
     %     kw -> kaiser window used for filtering
@@ -47,12 +48,15 @@ function [y, kw, beta, h, Nh] = fir_lfl_kw_os(x, fs, filter_params, L_block)
     for k = 1:num_of_full_blocks-1
         start_pos = (k-1)*Nx+1;
         x_k = x(start_pos : k*Nx);
-    
-        x_e = x_k;
-        x_e(Nx+1 : Ny) = 0;
-        X_e = fft(x_e);
-    
-        y_k = ifft(X_e.*H_e);
+        if((start_pos >= interval(1)) && (start_pos < interval(2)))
+            x_e = x_k;
+            x_e(Nx+1 : Ny) = 0;
+            X_e = fft(x_e);
+            y_k = ifft(X_e.*H_e);
+        else
+            y_k = x_k;
+            y_k((length(x_k)+1):Ny) = 0;
+        end
         y(start_pos : start_pos+Ny-1) = y(start_pos : start_pos+Ny-1) + y_k;
     end
 end
