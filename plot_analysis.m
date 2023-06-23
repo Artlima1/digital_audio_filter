@@ -1,30 +1,48 @@
-function plot_analysis (sig, fs)
+function plot_analysis (x, y, kw, h, fs)
 
     T = 1/fs;
-    L = length(sig);
+    L = length(x);
     t = (0:L-1)*T;
 
-    sig_fft = fft(sig);
-    sif_fft_mod = abs(fftshift(sig_fft));
+    X = fft(x);
+    X_mod = abs(fftshift(X));
+    X_mod_dB = mag2db(X_mod);
+    Y = fft(y);
+    Y_mod = abs(fftshift(Y));
+    Y_mod_dB = mag2db(Y_mod);
     f = fs*(-((L/2)-1):((L/2)))/L;
     
     figure
+    % Plot in time
+    subplot(2, 3, 1);
+    plot(t, x);
+    subplot(2, 3, 4);
+    plot(t, y);
 
-    % Plot the signal in time
-    subplot(2, 2, 1);
-    plot(t, sig);
+    % Plot in frequency
+    subplot(2, 3, 2);
+    plot(f, X_mod)
+    subplot(2, 3, 5);
+    plot(f, Y_mod);
 
-    % Plot the signal in frequency
-    subplot(2, 2, 2);
-    plot(f, sif_fft_mod)
+    % Plot in frequency (dB)
+    subplot(2, 3, 3);
+    plot(f, X_mod_dB)
+    subplot(2, 3, 6);
+    plot(f, Y_mod_dB)
 
-    % Plot the signal in frequency (dB)
-    subplot(2, 2, 3);
-    y = mag2db(sif_fft_mod);
-    plot(f, y)
+    figure
+    % Plot the spectrograms
+    subplot(1, 2, 1);
+    spectrogram(x, fs, 'yaxis');
+    subplot(1, 2, 2);
+    spectrogram(y, fs, 'yaxis');
 
-    % Plot the signal spectrogram
-    subplot(2, 2, 4);
-    spectrogram(sig, fs, 'yaxis')
+    figure
+    % Plot the spectrograms
+    subplot(1, 2, 1);
+    plot((1:length(kw)), kw);
+    subplot(1, 2, 2);
+    impz(h);
 
 end
