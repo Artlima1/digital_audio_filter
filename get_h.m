@@ -1,7 +1,9 @@
-function h  = get_h(w, N)
-    n = (-N/2:(N/2)-1);
-    h_ideal = transpose(sinc(n));
-    h = w.*h_ideal;
+function h  = get_h(window, f_p, f_r, fs)
+    wc = (f_r + f_p) * pi / fs;
+    N = length(window);
+    n = (0:N-1);
+    h_ideal = transpose(sinc((wc/pi).*(n-(N/2))));
+    h = window.*h_ideal;
 
     % plt = figure;
     % plt.subplot(2,2,1)
