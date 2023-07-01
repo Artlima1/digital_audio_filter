@@ -25,7 +25,8 @@ function [y, kw, beta, h, Nh] = fir_lfl_kw_os(x, fs, filter_params, L_block, int
     ripple = filter_params(3);
 
     % Getting Kaiser window
-    [N, ~, beta, ~] = kaiserord( [f_p f_r], [1 0], [ripple ripple], fs );
+    [order, ~, beta, ~] = kaiserord( [f_p f_r], [1 0], [ripple ripple], fs );
+    N = order+1;
     kw = kaiser(N, beta);
     
     % Bulding h[n]
@@ -45,8 +46,8 @@ function [y, kw, beta, h, Nh] = fir_lfl_kw_os(x, fs, filter_params, L_block, int
     
     % Creating y[n] and filling it using Overlap-add
     y = zeros(length(x), 1);
+    start_pos = 1;
     for k = 1:num_of_full_blocks-1
-        start_pos = (k-1)*Nx+1;
         x_k = x(start_pos : k*Nx);
         if((start_pos >= interval(1)) && (start_pos < interval(2)))
             x_e = x_k;
@@ -58,5 +59,6 @@ function [y, kw, beta, h, Nh] = fir_lfl_kw_os(x, fs, filter_params, L_block, int
             y_k((length(x_k)+1):Ny) = 0;
         end
         y(start_pos : start_pos+Ny-1) = y(start_pos : start_pos+Ny-1) + y_k;
+        start_pos = start_pos + L_block;
     end
 end
