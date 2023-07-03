@@ -14,4 +14,4 @@ tic
 [y_selected, kw, beta, h, Nh] = fir_lfl_kw_os(audio, fs, [5000, 6000, 0.01], 500, [1000000, 1500000]);
 toc
 
-plot_analysis(audio, y_full, y_selected, kw, h, fs);
+plot_analysis(audio, y_full, y_selected, kw, h, beta, fs);
