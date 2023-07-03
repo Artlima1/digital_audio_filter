@@ -31,8 +31,9 @@ function [y, kw, beta, h, Nh] = fir_lfl_kw_os(x, fs, filter_params, L_block, int
     
     % Bulding h[n]
     wc = (f_r + f_p) * pi / fs;
-    n = (0:N-1);
-    h_ideal = transpose(sinc((wc/pi).*(n-(N/2))));
+    n = transpose(0:N-1);
+    h_ideal = sin((n-(N/2)).*wc) ./ ((n-(N/2)).*pi);
+    h_ideal((N/2)+1) = wc/pi;
     h = kw.*h_ideal;
     
     % Calculating parameters for FIR filter with Overlap-add
